@@ -4,16 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.ormgas.hackathon2010.networking.ServerClient;
 import com.ormgas.hackathon2010.networking.ServerClient.GameEvent;
+import com.ormgas.hackathon2010.networking.ServerClient.GameEventListener;
 import com.stickycoding.rokon.DrawPriority;
 import com.stickycoding.rokon.RokonActivity;
 import com.stickycoding.rokon.device.Graphics;
 
-public class GameActivity extends RokonActivity
+public class GameActivity extends RokonActivity implements GameEventListener
 {
 	public static final float sizeWidth = 800.0f;
 	public static final float sizeHeight = 480.0f;
@@ -35,10 +35,11 @@ public class GameActivity extends RokonActivity
     
     public void onLoadComplete()
     {
-        //ServerClient client = new ServerClient();
+        //final ServerClient client = new ServerClient();
         //client.start(this);
+        //Log.d("Game", "moving on...");
 
-        registerReceiver(mUpdateUiReceiver, new IntentFilter(ServerClient.UPDATE_UI));
+        //registerReceiver(mUpdateUiReceiver, new IntentFilter(ServerClient.UPDATE_UI));
         
     	Sounds.load();
     	
@@ -61,4 +62,10 @@ public class GameActivity extends RokonActivity
             // TODO: handle onEvent...
         }
     };
+
+    @Override
+    public void onGameEvent(GameEvent event) {
+        // TODO Auto-generated method stub
+        
+    }
 }

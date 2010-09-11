@@ -21,14 +21,45 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+
+/**
+ *
+create player/bullet:
+curl -d "x=0&y=0&heading=0&speed=0&hp=100" "http://vabba.nu:1337/players.json"
+curl -d "x=0&y=0&heading=0&speed=0&hp=100" "http://vabba.nu:1337/bullets.json"
+update player/bullet positions:
+curl "http://vabba.nu:1337/update_player_position/1?x=3&y=5&heading=2&speed=3&hp=90"
+curl "http://vabba.nu:1337/update_bullet_position/1?x=3&y=5&heading=2&speed=3&hp=90"
+events:
+curl "http://vabba.nu:1337/events"
+delete player/bullet
+http://vabba.nu:1337/delete_bullet/8
+http://vabba.nu:1337/delete_player/8
+ */
 public class ServerClient {
     static final String TAG = "ServerClient";
     public static String UPDATE_UI = "com.ormgas.hackathon2010.action.UPDATE_UI";
-    static final String BASE_URL = "http://10.0.2.2:8080";
+    static final String BASE_URL = "http://vabba.nu:1337";
     public static final String EVENT_EXTRA = "com.ormgas.hackathon2010.EVENT_EXTRA";
 
-    private Context mContext;
+    private GameEventListener mGameEventListener;
 
+    public void createPlayer() {
+        
+    }
+    
+    public void updatePlayer() {
+        
+    }
+    
+    public void createBullet() {
+        
+    }
+    
+    public void updateBullet() {
+        
+    }
+    
     public void sendEvent(final GameEvent event) {
         new Thread(new Runnable() {
             @Override
@@ -53,40 +84,29 @@ public class ServerClient {
         }).start();
     }
 
-
     public void listenForEvent() {
         new Thread(new Runnable() {
             public void run() {
                 boolean listen = true;
 
                 while (listen) {
-                    
-                    URI uri;
+                    Log.d(TAG, "listenForEvent");
                     try {
-                        Log.d(TAG, "listenForEvent");
-                        
                         Thread.sleep(1000);
-                        
-                        uri = new URI(BASE_URL + "/event");
+
+                        URI uri = new URI(BASE_URL + "/events");
                         HttpGet method = new HttpGet(uri);
                         final HttpParams getParams = new BasicHttpParams();
                         method.setParams(getParams);
                         final HttpResponse response = HttpManager.execute(method);
-                        
-                        // TODO: parse response and broadcast it (if we got one).
-                        GameEvent event = new GameEvent();
-                        broadcactEvent(event);
-                        
+                        Log.d(TAG, "got response: " + response.getStatusLine().getStatusCode());
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     } catch (URISyntaxException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
-                    } catch (ClientProtocolException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
@@ -96,13 +116,14 @@ public class ServerClient {
     }
 
     private void broadcactEvent(final GameEvent event) {
-        Intent mUpdateUiIntent = new Intent(UPDATE_UI);
+        /*Intent mUpdateUiIntent = new Intent(UPDATE_UI);
         mUpdateUiIntent.putExtra(EVENT_EXTRA, "event");
-        mContext.sendBroadcast(mUpdateUiIntent);
+        mContext.sendBroadcast(mUpdateUiIntent);*/
+        mGameEventListener.onGameEvent(event);
     }
     
-    public void start(Context context) {
-        mContext = context;
+    public void start(GameEventListener listener) {
+        mGameEventListener = listener;
 
         listenForEvent();
     }
@@ -111,6 +132,10 @@ public class ServerClient {
 
     }
 
+    public interface GameEventListener {
+        public void onGameEvent(GameEvent event);
+    }
+    
     public class GameEvent implements Parcelable {
         public int id;
         public int ownerId;
