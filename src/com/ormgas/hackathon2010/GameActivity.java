@@ -8,14 +8,17 @@ import com.ormgas.hackathon2010.networking.GameEventFetcher;
 import com.ormgas.hackathon2010.networking.ServerClient;
 import com.stickycoding.rokon.DrawPriority;
 import com.stickycoding.rokon.RokonActivity;
+import com.stickycoding.rokon.Scene;
 import com.stickycoding.rokon.device.Graphics;
 
 public class GameActivity extends RokonActivity
 {
+	private final static String TAG = GameActivity.class.getSimpleName();
 	public static final float sizeWidth = 800.0f;
 	public static final float sizeHeight = 480.0f;
 	
 	public static SceneHandler sceneHandler;
+	private ServerClient client;
 	
     public void onCreate()
     {
@@ -28,6 +31,10 @@ public class GameActivity extends RokonActivity
     	setDrawPriority(DrawPriority.PRIORITY_NORMAL);
     	setGraphicsPath("textures/");
     	createEngine();
+    }
+    
+    public void onDestroy() {
+    	super.onDestroy();
     }
     
     public void onLoadComplete()
