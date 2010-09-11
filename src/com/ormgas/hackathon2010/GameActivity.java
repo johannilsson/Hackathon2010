@@ -1,19 +1,16 @@
 package com.ormgas.hackathon2010;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
+import com.ormgas.hackathon2010.networking.GameEventFetcher;
 import com.ormgas.hackathon2010.networking.ServerClient;
-import com.ormgas.hackathon2010.networking.ServerClient.GameEvent;
-import com.ormgas.hackathon2010.networking.ServerClient.GameEventListener;
 import com.stickycoding.rokon.DrawPriority;
 import com.stickycoding.rokon.RokonActivity;
 import com.stickycoding.rokon.device.Graphics;
 
-public class GameActivity extends RokonActivity implements GameEventListener
+public class GameActivity extends RokonActivity
 {
 	public static final float sizeWidth = 800.0f;
 	public static final float sizeHeight = 480.0f;
@@ -35,12 +32,6 @@ public class GameActivity extends RokonActivity implements GameEventListener
     
     public void onLoadComplete()
     {
-        //final ServerClient client = new ServerClient();
-        //client.start(this);
-        //Log.d("Game", "moving on...");
-
-        //registerReceiver(mUpdateUiReceiver, new IntentFilter(ServerClient.UPDATE_UI));
-        
     	Sounds.load();
     	
     	sceneHandler = new SceneHandler(this);
@@ -49,23 +40,19 @@ public class GameActivity extends RokonActivity implements GameEventListener
     	sceneHandler.AddScene(SceneHandler.SceneId.GameScene, new GameScene(sceneHandler));
     	
     	sceneHandler.SetScene(SceneHandler.SceneId.StartScene);
+    	
+    	/*
+        final ServerClient client = new ServerClient();
+        GameEventFetcher.initInstance(mHandler, client);
+        GameEventFetcher fetcher = GameEventFetcher.getInstance();
+        fetcher.start();
+        */
+
     }
 
-    private final BroadcastReceiver mUpdateUiReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            //GameEvent event = intent.getParcelableExtra(ServerClient.EVENT_EXTRA);
-            String event = intent.getStringExtra(ServerClient.EVENT_EXTRA);
-            
-            
-            Log.d("Game", "got event");
-            // TODO: handle onEvent...
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            Log.d("GAMEEEEEEEEEEEE", "got event!???");
         }
     };
-
-    @Override
-    public void onGameEvent(GameEvent event) {
-        // TODO Auto-generated method stub
-        
-    }
 }

@@ -84,6 +84,21 @@ public class ServerClient {
         }).start();
     }
 
+    public void fetchEvents() {
+        try {
+            URI uri = new URI(BASE_URL + "/events");
+            HttpGet method = new HttpGet(uri);
+            final HttpParams getParams = new BasicHttpParams();
+            method.setParams(getParams);
+            final HttpResponse response = HttpManager.execute(method);
+            Log.d(TAG, "got response: " + response.getStatusLine().getStatusCode());
+            
+            // TODO: parse response...
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
     public void listenForEvent() {
         new Thread(new Runnable() {
             public void run() {
@@ -114,6 +129,7 @@ public class ServerClient {
             }
         }).start();
     }
+
 
     private void broadcactEvent(final GameEvent event) {
         /*Intent mUpdateUiIntent = new Intent(UPDATE_UI);
@@ -156,4 +172,6 @@ public class ServerClient {
             
         }
     }
+    
+    
 }
